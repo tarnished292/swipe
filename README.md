@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="https://www.rust-lang.org/logos/rust-logo-512x512.png" width="100" />
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXB9P5fDpjzPfOGEjLErH2cYlxkTf0oBxCw&s" width="100" />
   <h1>Swipe</h1>
   <p>A command-line file organizer written in Rust</p>
 </div>
 
 ---
 
-## What is Rust-Broom
+## What is Swipe
 
 Swipe is a CLI tool that takes a folder path as input and organizes its contents by automatically sorting files into categorized subfolders based on their extensions. Images go into images, videos go into videos, documents go into documents, and so on. It removes the manual effort of cleaning up cluttered directories.
 
