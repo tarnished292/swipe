@@ -1,7 +1,6 @@
 use std::env;
 use std::fs;
 use std::fs::read_dir;
-// use std::fs::rename;
 
 fn main() {
     // Getting the path
@@ -25,6 +24,9 @@ fn main() {
 
     // This is the locationnnn to store the organize file folder stuff
     let output_base = &path;
+    let mut moved = 0;
+    let mut skipped = 0;
+    let mut errors = 0;
 
     // Itertaing path item
     for i in files {
@@ -33,6 +35,7 @@ fn main() {
                 let path = entry.path();
 
                 if path.is_dir() {
+                    skipped = skipped + 1;
                     continue;
                 }
                 
@@ -78,13 +81,19 @@ fn main() {
                     println!("Error: {e}");
                     continue;
                 }
-
-                println!("File name {name}, Category: {:?}", category);
+                moved = moved + 1;
+                println!("\x1b[32m✓ Moved: {name} → {category}\x1b[0m");
             }
             Err(e) => {
                 println!("Error: {e}");
-                return;
+                errors = errors + 1;
+                continue;
             }
         }
     }
+    println!("===== SUMMARY =====");
+    println!("Moved: {moved}");
+    println!("Skipped: {skipped}");
+    println!("Error: {errors}");
+    println!("===================");
 }
