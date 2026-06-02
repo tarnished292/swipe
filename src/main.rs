@@ -1,7 +1,7 @@
 use std::env;
 use std::fs;
 use std::fs::read_dir;
-use std::fs::rename;
+// use std::fs::rename;
 
 fn main() {
     // Getting the path
@@ -24,26 +24,45 @@ fn main() {
     };
 
     // This is the locationnnn to store the organize file folder stuff
-    let output_base = "D:/rustBroom_test/";
+    let output_base = &path;
 
     // Itertaing path item
     for i in files {
         match i {
             Ok(entry) => {
                 let path = entry.path();
+
+                if path.is_dir() {
+                    continue;
+                }
+                
                 let name = entry.file_name().to_string_lossy().into_owned();
                 let extension = path.extension().and_then(|e| e.to_str());
 
                 let category = match extension {
-                    Some("rs") => "code",
-                    Some("pdf") | Some("txt") | Some("csv") => "documents",
-                    Some("json") => "sheet",
-                    Some("zip") => "zip",
-                    Some("msi") | Some("exe") => "installer",
-                    Some("toml") | Some("lock") => "build",
-                    Some("png") | Some("jpg") => "images",
-                    Some("mp4") => "videos",
-                    Some("mp3") | Some("wav") => "audios",
+                    Some(
+                        "rs" | "go" | "py" | "js" | "ts" | "cpp" | "c" | "java" | "html" | "css",
+                    ) => "programming",
+                    Some("json" | "toml" | "yaml" | "yml" | "xml" | "config" | "ini") => "configs",
+                    Some("sh" | "bat" | "ps1") => "scripts",
+
+                    Some("msi" | "exe" | "nsis" | "deb" | "rpm" | "dmg" | "iso") | Some("iss") => {
+                        "installers"
+                    }
+                    Some("dll" | "sys" | "tmp") => "system_files",
+
+                    Some("zip" | "rar" | "7z" | "tar" | "gz") => "archives",
+
+                    Some("pdf") => "pdf_documents",
+                    Some("doc" | "docx" | "rtf" | "odt") => "word_docs",
+                    Some("xls" | "xlsx" | "csv") => "spreadsheets",
+                    Some("ppt" | "pptx") => "presentations",
+                    Some("txt") => "plain_text",
+
+                    Some("png" | "jpg" | "jpeg" | "webp" | "svg" | "ico" | "gif") => "images",
+                    Some("mp4" | "mkv" | "mov" | "avi") => "videos",
+                    Some("mp3" | "wav" | "flac" | "aac") => "audios",
+
                     Some(other) => other,
                     None => "unknown",
                 };

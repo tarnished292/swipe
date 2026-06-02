@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "rustbroom"
+name = "swipe"
 version = "0.1.0"
