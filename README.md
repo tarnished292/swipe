@@ -12,8 +12,31 @@ Swipe is a CLI tool that takes a folder path as input and organizes its contents
 
 ## Usage
 
+## Arguments
+| Argument | Description | Required |
+|---|---|---|
+| `<input_path>` | Folder to organize | ✅ Yes |
+| `[output_path]` | Where to put organized files | ❌ No (default: `<input_path>/swipe_output`) |
+
+## Examples
+
+**Full path:**
+```bash
+swipe C:/Users/You/Downloads
+swipe C:/Users/You/Downloads C:/Users/You/Desktop/cleaned
 ```
-cargo run -- "C:/Users/You/Downloads"
+
+**Already in the folder (use `.` for current directory):**
+```bash
+cd C:/Users/You/Downloads
+swipe .
+swipe . C:/Users/You/Desktop/cleaned
+```
+
+**Relative path:**
+```bash
+swipe ./my-folder
+swipe ./my-folder ./cleaned
 ```
 
 Swipe will read the folder, detect each file's extension, create the appropriate category folder if it does not exist, and move the file into it.
