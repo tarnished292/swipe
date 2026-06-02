@@ -23,7 +23,9 @@ fn main() {
         }
     };
 
-    let output_base = "D:/rustBroom_test/output";
+    // This is the locationnnn to store the organize file folder stuff
+    let output_base = "D:/rustBroom_test/";
+
     // Itertaing path item
     for i in files {
         match i {
@@ -37,13 +39,13 @@ fn main() {
                     Some("pdf") | Some("txt") | Some("csv") => "documents",
                     Some("json") => "sheet",
                     Some("zip") => "zip",
-                    Some("msi") | Some("exe") => "Installer",
+                    Some("msi") | Some("exe") => "installer",
                     Some("toml") | Some("lock") => "build",
                     Some("png") | Some("jpg") => "images",
                     Some("mp4") => "videos",
                     Some("mp3") | Some("wav") => "audios",
                     Some(other) => other,
-                    None => "folder/unknown",
+                    None => "unknown",
                 };
 
                 let target_folder = format!("{output_base}/{category}");
@@ -51,11 +53,12 @@ fn main() {
                     println!("Failed to create folder: {}", e);
                     continue;
                 }
+
                 let dest = format!("{target_folder}/{name}");
-               if let Err(e) =  fs::rename(&path, &dest) {
-                   println!("Error: {e}");
-                   continue;
-               }
+                if let Err(e) = fs::rename(&path, &dest) {
+                    println!("Error: {e}");
+                    continue;
+                }
 
                 println!("File name {name}, Category: {:?}", category);
             }
