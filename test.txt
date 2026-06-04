@@ -1,0 +1,53 @@
+use std::fs::{self, read_dir};
+use crate::category::get_category;
+
+pub fn run_file_transfer(input_path: &str, output_base: &str) -> (u32, u32, u32) {
+    let files = match read_dir(input_path) {
+        Ok(f) => f,
+        Err(_) => return (0, 0, 1),
+    };
+
+    let mut moved = 0;
+    let mut skipped = 0;
+    let mut errors = 0;
+
+    for entry in files {
+        let entry = match entry {
+            Ok(e) => e,
+            Err(_) => {
+                errors += 1;
+                continue;
+            }
+        };
+
+        let path = entry.path();
+
+        if path.is_dir() {
+            skipped += 1;
+            continue;
+        }
+
+        let name = entry.file_name().to_string_lossy().to_string();
+        let ext = path.extension().and_then(|e| e.to_str());
+
+        let category = get_category(ext);
+
+        let target_folder = format!("{output_base}/{category}");
+
+        if fs::create_dir_all(&target_folder).is_err() {
+            errors += 1;
+            continue;
+        }
+
+        let dest = format!("{target_folder}/{name}");
+
+        if fs::rename(&path, &dest).is_err() {
+            errors += 1;
+            continue;
+        }
+
+        moved += 1;
+    }
+
+    (moved, skipped, errors)
+}
