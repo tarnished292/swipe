@@ -20,11 +20,11 @@ fn main() {
         None => format!("{}/swipe_output", input),
     };
 
-    let stats = organizer::file_transfer(input, &output);
+    organizer::file_transfer(input, &output);
 
-    println!("===== SWIPE SUMMARY =====");
-    println!("Moved  : {}", stats.moved);
-    println!("Skipped: {}", stats.skipped);
-    println!("Errors : {}", stats.errors);
+    // println!("===== SWIPE SUMMARY =====");
+    // println!("Moved  : {}", stats.moved);
+    // println!("Skipped: {}", stats.skipped);
+    // println!("Errors : {}", stats.errors);
   
 }

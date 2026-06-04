@@ -3,35 +3,16 @@ use std::fs::{self, read_dir};
 
 use indicatif::{ProgressBar, ProgressStyle};
 
-pub struct TransferStats {
-    pub moved: u32,
-    pub skipped: u32,
-    pub errors: u32,
-}
-
-pub fn file_transfer(input_path: &str, output_base: &str) -> TransferStats {
+pub fn file_transfer(input_path: &str, output_base: &str) {
     // Validating the path
     let files: Vec<_> = match read_dir(input_path) {
         Ok(files) => files.collect(),
         Err(_) => {
-            return TransferStats {
-                moved: 0,
-                skipped: 0,
-                errors: 1,
-            };
-        }
+            return;
+        }   
     };
 
-    let pb = ProgressBar::new(files.len() as u64);
-    pb.set_style(
-        ProgressStyle::with_template(
-            "\n{spinner:.cyan.bold} {msg}\n [{bar:45.green/dim}] {pos}/{len} ({percent}%) ⏱ {elapsed}"
-        )
-        .unwrap()
-        .tick_strings(&["⠋","⠙","⠹","⠸","⠼","⠴","⠦","⠧","⠇","⠏"])
-        .progress_chars("█▓░"),
-    );
-    pb.set_message("Sorting files...");
+    let pb = build_progress_bar(files.len() as u64);
 
     let mut moved = 0;
     let mut skipped = 0;
@@ -71,7 +52,7 @@ pub fn file_transfer(input_path: &str, output_base: &str) -> TransferStats {
                 }
 
                 moved += 1;
-                pb.println(format!("\x1b[32m✓ Moved: {name} → {category}\x1b[0m"));
+                pb.set_message(format!("{name} → {category}"));
                 pb.inc(1);
             }
             Err(e) => {
@@ -83,11 +64,24 @@ pub fn file_transfer(input_path: &str, output_base: &str) -> TransferStats {
         }
     }
 
-    pb.finish_with_message("Transfering Complete");
+    pb.finish_with_message(format!(
+        "Done — {} moved, {} skipped, {} errors",
+        moved, skipped, errors
+    ));
+}
 
-    TransferStats {
-        moved,
-        skipped,
-        errors,
-    }
+
+fn build_progress_bar(total: u64) -> ProgressBar {
+    let pb = ProgressBar::new(total);
+    pb.set_style(
+        ProgressStyle::with_template(
+            "\n{spinner:.cyan.bold} {msg}\n [{bar:45.green/dim}] {pos}/{len} ({percent}%) ⏱ {elapsed}",
+        )
+        .unwrap()
+        .tick_strings(&["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"])
+        .progress_chars("█▓░"),
+    );
+    pb.enable_steady_tick(std::time::Duration::from_millis(80));
+    pb.set_message("Sorting files...");
+    pb
 }
